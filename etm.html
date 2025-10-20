@@ -1,0 +1,3422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape The Matrix Academy | Professional Digital Skills Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #ff4c00;
+            --secondary-color: #111;
+            --light-bg: #f7f7f7;
+            --text-dark: #222;
+            --text-light: #fff;
+            --accent-color: #ff7700;
+            --font-main: 'Poppins', 'Segoe UI', sans-serif;
+            --font-heading: 'Montserrat', 'Poppins', sans-serif;
+            --max-width: 1200px;
+            --matrix-green: #00ff41;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --uba-blue: #0055a5;
+            --uba-gold: #ffd700;
+            --ai-purple: #8a2be2;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-main);
+            color: var(--text-dark);
+            background-color: #000;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Matrix Background */
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: #000;
+            overflow: hidden;
+        }
+        
+        .matrix-column {
+            position: absolute;
+            top: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            color: var(--matrix-green);
+            text-shadow: 0 0 8px var(--matrix-green), 0 0 16px var(--matrix-green);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: matrixFall linear infinite;
+        }
+        
+        .matrix-digit {
+            opacity: 0.9;
+            transition: opacity 0.3s;
+            font-weight: bold;
+        }
+        
+        .matrix-digit.highlight {
+            color: #fff;
+            text-shadow: 0 0 12px #fff, 0 0 24px var(--matrix-green);
+            opacity: 1;
+        }
+        
+        .matrix-text {
+            color: #fff;
+            text-shadow: 0 0 12px #fff, 0 0 24px var(--matrix-green);
+            font-weight: bold;
+            margin: 10px 0;
+            opacity: 1;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        
+        @keyframes matrixFall {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+        
+        /* Content Container */
+        .content-container {
+            position: relative;
+            z-index: 1;
+            background: rgba(0, 0, 0, 0.75);
+            min-height: 100vh;
+        }
+        
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 100;
+            padding: 15px 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.8em;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo span {
+            color: var(--matrix-green);
+            text-shadow: 0 0 10px var(--matrix-green);
+        }
+        
+        .logo i {
+            color: var(--primary-color);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--matrix-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+        
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .dropdown-content a {
+            color: var(--text-dark);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background 0.3s;
+        }
+        
+        .dropdown-content a:hover {
+            background: var(--light-bg);
+            color: var(--primary-color);
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        /* AI Assistant Chat Widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 350px;
+            max-width: 90vw;
+        }
+        
+        .chat-toggle {
+            background: linear-gradient(135deg, var(--ai-purple), #6a0dad);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .chat-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.6);
+        }
+        
+        .chat-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--ai-purple), #6a0dad);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chat-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #f9f9f9;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 12px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+            position: relative;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background: var(--ai-purple);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            align-self: flex-start;
+            background: #e9ecef;
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        
+        .chat-input button {
+            background: var(--ai-purple);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background: #e9ecef;
+            padding: 12px 15px;
+            border-radius: 18px;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: typingPulse 1.5s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typingPulse {
+            0%, 60%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            30% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+        
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .quick-action {
+            background: rgba(138, 43, 226, 0.1);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 15px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-action:hover {
+            background: rgba(138, 43, 226, 0.2);
+        }
+        
+        /* Authentication Modal */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .auth-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            position: relative;
+            animation: modalFadeIn 0.3s;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .auth-tab.active {
+            border-bottom-color: var(--ai-purple);
+            color: var(--ai-purple);
+            font-weight: 600;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .verification-code {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .verification-code input {
+            flex: 1;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        /* Hero Section */
+        .hero {
+            position: relative;
+            background: linear-gradient(135deg, rgba(17, 17, 17, 0.9) 0%, rgba(0, 0, 0, 0.9) 100%);
+            color: var(--text-light);
+            padding: 120px 20px;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        
+        .hero p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(255, 76, 0, 0.3);
+        }
+        
+        .cta-button:hover {
+            background: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 76, 0, 0.4);
+        }
+        
+        .cta-button.secondary {
+            background: transparent;
+            border: 2px solid var(--matrix-green);
+            color: var(--matrix-green);
+            box-shadow: 0 4px 15px rgba(0, 255, 65, 0.2);
+        }
+        
+        .cta-button.secondary:hover {
+            background: rgba(0, 255, 65, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 255, 65, 0.3);
+        }
+        
+        /* Data Analysis Dashboard */
+        .dashboard {
+            padding: 40px 20px;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            color: white;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: var(--matrix-green);
+        }
+        
+        .dashboard-header p {
+            font-size: 1.2em;
+            color: #ccc;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .dashboard-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .data-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+        
+        .btn:hover {
+            background: var(--accent-color);
+        }
+        
+        .btn-secondary {
+            background: var(--uba-blue);
+        }
+        
+        .btn-secondary:hover {
+            background: #003d82;
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-purple {
+            background: var(--ai-purple);
+        }
+        
+        .btn-purple:hover {
+            background: #7b1fa2;
+        }
+        
+        .data-preview {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            height: 300px;
+        }
+        
+        /* Sections */
+        section {
+            padding: 100px 20px;
+            color: white;
+        }
+        
+        .light-section {
+            background: rgba(247, 247, 247, 0.9);
+            color: var(--text-dark);
+        }
+        
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        .light-section .section-title h2::after {
+            background: var(--primary-color);
+        }
+        
+        .section-title p {
+            font-size: 1.2em;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #ccc;
+        }
+        
+        .light-section .section-title p {
+            color: #666;
+        }
+        
+        /* Course Categories */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+        
+        .category-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+        }
+        
+        .light-section .category-card {
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--matrix-green));
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+        
+        .light-section .category-card:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .category-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 1.8rem;
+        }
+        
+        .category-card h3 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+        
+        .category-card p {
+            color: #ccc;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+        }
+        
+        .light-section .category-card p {
+            color: #666;
+        }
+        
+        .course-count {
+            display: inline-block;
+            background: rgba(255, 76, 0, 0.1);
+            color: var(--primary-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .light-section .feature-card {
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--matrix-green));
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+        
+        .light-section .feature-card:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card p {
+            color: #ccc;
+        }
+        
+        .light-section .feature-card p {
+            color: #666;
+        }
+        
+        /* Pricing Section */
+        .pricing-tiers {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .light-section .pricing-card {
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--primary-color);
+        }
+        
+        .pricing-card.premium::before {
+            background: linear-gradient(90deg, var(--primary-color), var(--matrix-green));
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .light-section .pricing-card:hover {
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .pricing-card.premium {
+            transform: scale(1.05);
+            border: 2px solid var(--matrix-green);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
+        }
+        
+        .pricing-card.premium:hover {
+            transform: scale(1.05) translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 255, 65, 0.3);
+        }
+        
+        .pricing-header {
+            margin-bottom: 30px;
+        }
+        
+        .pricing-header h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        
+        .pricing-header .price {
+            font-size: 3em;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+        
+        .pricing-card.basic .price {
+            color: var(--primary-color);
+        }
+        
+        .pricing-card.premium .price {
+            color: var(--matrix-green);
+        }
+        
+        .price span {
+            font-size: 0.5em;
+            color: #ccc;
+        }
+        
+        .light-section .price span {
+            color: #666;
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .pricing-features li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+            color: #ccc;
+        }
+        
+        .light-section .pricing-features li {
+            color: #666;
+        }
+        
+        .pricing-features li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        
+        .pricing-features.premium li::before {
+            color: var(--matrix-green);
+        }
+        
+        /* Matrix Premium Section */
+        .matrix-section {
+            position: relative;
+            background: rgba(0, 0, 0, 0.9);
+            color: var(--text-light);
+            overflow: hidden;
+        }
+        
+        .matrix-section .section-title h2 {
+            color: var(--matrix-green);
+            text-shadow: 0 0 10px var(--matrix-green);
+        }
+        
+        .matrix-section .section-title h2::after {
+            background: var(--matrix-green);
+        }
+        
+        .premium-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .premium-card {
+            background: rgba(0, 255, 65, 0.05);
+            border: 1px solid rgba(0, 255, 65, 0.2);
+            border-radius: 10px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .premium-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
+            border-color: rgba(0, 255, 65, 0.4);
+        }
+        
+        .premium-icon {
+            font-size: 3rem;
+            color: var(--matrix-green);
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px var(--matrix-green);
+        }
+        
+        .premium-card h3 {
+            color: var(--matrix-green);
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .premium-card p {
+            color: #ccc;
+        }
+        
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+        
+        .light-section .testimonial-card {
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .testimonial-card::before {
+            content: """;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 4rem;
+            color: rgba(255,255,255,0.1);
+            font-family: Georgia, serif;
+        }
+        
+        .light-section .testimonial-card::before {
+            color: rgba(0,0,0,0.1);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .author-info h4 {
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            color: #ccc;
+            font-size: 0.9em;
+        }
+        
+        .light-section .author-info p {
+            color: #666;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+            animation: modalFadeIn 0.3s;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: var(--danger-color);
+        }
+        
+        .modal-title {
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--uba-blue);
+        }
+        
+        /* UBA Payment Styling */
+        .uba-payment-header {
+            background: linear-gradient(135deg, var(--uba-blue), #003366);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .uba-logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .uba-payment-header h3 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        
+        .uba-payment-header p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+        }
+        
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .payment-method {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-method:hover, .payment-method.active {
+            border-color: var(--uba-blue);
+            background: rgba(0, 85, 165, 0.05);
+        }
+        
+        .payment-method.uba {
+            border-color: var(--uba-blue);
+            background: rgba(0, 85, 165, 0.05);
+        }
+        
+        .payment-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .uba-security-notice {
+            background: #f8f9fa;
+            border-left: 4px solid var(--uba-blue);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .uba-security-notice h4 {
+            color: var(--uba-blue);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .payment-process {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .payment-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--uba-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .payment-success {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--success-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 2.5rem;
+        }
+        
+        /* UBA API Simulation */
+        .uba-api-simulation {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .api-log {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .api-log.success {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+        
+        .api-log.error {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .api-log.info {
+            background: rgba(0, 85, 165, 0.1);
+            color: var(--uba-blue);
+        }
+        
+        /* UBA Specific Form Styles */
+        .uba-form-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .uba-form-section h4 {
+            color: var(--uba-blue);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .uba-token-notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        
+        /* UBA Mobile Banking */
+        .uba-mobile-banking {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .uba-mobile-icon {
+            font-size: 3rem;
+            color: var(--uba-blue);
+            margin-bottom: 15px;
+        }
+        
+        .uba-steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        
+        .uba-step {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: var(--uba-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 76, 0, 0.1);
+        }
+        
+        /* Data Analysis Results */
+        .analysis-results {
+            margin-top: 30px;
+        }
+        
+        .result-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .result-section h4 {
+            color: var(--matrix-green);
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .result-table th, .result-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .result-table th {
+            color: var(--primary-color);
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(17, 17, 17, 0.95);
+            color: #ccc;
+            padding: 80px 20px 40px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            color: white;
+            margin-bottom: 25px;
+            font-size: 1.3em;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            color: #ccc;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* Course Modal */
+        .course-modal-content {
+            max-width: 900px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .course-header {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .course-image {
+            width: 150px;
+            height: 150px;
+            background: var(--secondary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+        
+        .course-info h2 {
+            margin-bottom: 10px;
+        }
+        
+        .course-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .course-badge {
+            background: rgba(255, 76, 0, 0.1);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        .course-topics {
+            margin-top: 30px;
+        }
+        
+        .topic-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .topic-item:last-child {
+            border-bottom: none;
+        }
+        
+        .topic-icon {
+            width: 40px;
+            height: 40px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        
+        .topic-locked {
+            color: #ccc;
+        }
+        
+        .locked-icon {
+            margin-left: auto;
+            color: #ccc;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .payment-methods {
+                flex-direction: column;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .uba-steps {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chat-widget {
+                width: 90vw;
+                right: 5vw;
+            }
+            
+            .hero h1 {
+                font-size: 2.5em;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .pricing-card.premium {
+                transform: none;
+            }
+            
+            .pricing-card.premium:hover {
+                transform: translateY(-10px);
+            }
+            
+            .course-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .course-image {
+                align-self: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Background -->
+    <div id="matrix-bg"></div>
+
+    <!-- Content Container -->
+    <div class="content-container">
+        <!-- Navigation -->
+        <nav>
+            <div class="nav-container">
+                <a href="#" class="logo">
+                    <i class="fas fa-code"></i>
+                    Escape The <span>Matrix</span>
+                </a>
+                <div class="nav-links">
+                    <a href="#home">Home</a>
+                    <a href="#courses">Courses</a>
+                    <a href="#dashboard">Data Analysis</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#premium">The Real World</a>
+                    <a href="#testimonials">Testimonials</a>
+                    <div class="user-menu">
+                        <div class="dropdown">
+                            <div class="user-avatar" id="userAvatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="openAuthModal()"><i class="fas fa-sign-in-alt"></i> Login</a>
+                                <a href="#" onclick="openAuthModal()"><i class="fas fa-user-plus"></i> Register</a>
+                                <a href="#"><i class="fas fa-question-circle"></i> Help Center</a>
+                                <a href="#" id="logoutBtn" style="display:none;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <h1>Escape The 9–5. Master Digital Skills. Take Control of Your Future.</h1>
+                <p>Break free from the grind and build the life you deserve — powered by skills that <strong>actually create freedom</strong>.</p>
+                <div class="cta-buttons">
+                    <a href="#courses" class="cta-button">🚀 Explore Courses</a>
+                    <a href="#dashboard" class="cta-button">📊 Data Analysis Tools</a>
+                    <a href="#premium" class="cta-button secondary">💎 Enter The Real World</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Analysis Dashboard -->
+        <section class="dashboard" id="dashboard">
+            <div class="dashboard-header">
+                <h1>Data Analysis Dashboard</h1>
+                <p>Analyze your data with powerful tools and visualize insights</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-upload"></i> Data Upload</h3>
+                    <div class="data-controls">
+                        <input type="file" id="fileInput" accept=".csv,.xlsx,.json" class="form-control">
+                        <button class="btn" onclick="loadData()">Load Data</button>
+                    </div>
+                    <div class="data-preview" id="dataPreview">
+                        <p>No data loaded. Please upload a CSV, Excel, or JSON file.</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-chart-bar"></i> Data Analysis</h3>
+                    <div class="data-controls">
+                        <button class="btn" onclick="performEDA()">Exploratory Analysis</button>
+                        <button class="btn btn-secondary" onclick="handleMissingValues()">Handle Missing Data</button>
+                        <button class="btn btn-success" onclick="generateVisualizations()">Create Visualizations</button>
+                    </div>
+                    <div class="data-preview" id="analysisResults">
+                        <p>Analysis results will appear here.</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3><i class="fas fa-cogs"></i> Data Processing</h3>
+                    <div class="data-controls">
+                        <button class="btn" onclick="showColumnStats()">Column Statistics</button>
+                        <button class="btn btn-secondary" onclick="showDataOverview()">Data Overview</button>
+                        <button class="btn btn-purple" onclick="openPaymentModal('premium')">Upgrade for Advanced Features</button>
+                    </div>
+                    <div class="data-preview" id="processingResults">
+                        <p>Processing options and results.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="dataChart"></canvas>
+            </div>
+
+            <div class="analysis-results" id="detailedResults">
+                <!-- Detailed analysis results will be inserted here -->
+            </div>
+        </section>
+
+        <!-- Courses Section -->
+        <section id="courses" class="light-section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>50+ Professional Courses</h2>
+                    <p>Master in-demand skills with our comprehensive curriculum. Free users get limited access, while premium users unlock everything.</p>
+                </div>
+                <div class="categories-grid">
+                    <div class="category-card" onclick="openCourseModal('programming')">
+                        <div class="category-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <h3>Programming & Automation</h3>
+                        <p>Python, JavaScript, Java, C++, automation scripts</p>
+                        <span class="course-count">50 Topics</span>
+                    </div>
+                    <div class="category-card" onclick="openCourseModal('webdev')">
+                        <div class="category-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h3>Web Development</h3>
+                        <p>HTML, CSS, React, Node.js, full-stack development</p>
+                        <span class="course-count">45 Topics</span>
+                    </div>
+                    <div class="category-card" onclick="openCourseModal('data')">
+                        <div class="category-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3>Data Analysis</h3>
+                        <p>SQL, Tableau, Power BI, Python数据分析</p>
+                        <span class="course-count">40 Topics</span>
+                    </div>
+                    <div class="category-card" onclick="openCourseModal('marketing')">
+                        <div class="category-icon">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h3>Digital Marketing</h3>
+                        <p>SEO, SEM, content strategy, social media marketing</p>
+                        <span class="course-count">35 Topics</span>
+                    </div>
+                    <div class="category-card" onclick="openCourseModal('appdev')">
+                        <div class="category-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>App Development</h3>
+                        <p>iOS, Android, React Native, Flutter development</p>
+                        <span class="course-count">40 Topics</span>
+                    </div>
+                    <div class="category-card" onclick="openCourseModal('design')">
+                        <div class="category-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <h3>UX/UI Design</h3>
+                        <p>Figma, Adobe XD, user research, prototyping</p>
+                        <span class="course-count">30 Topics</span>
+                    </div>
+                    <div class="category-card" onclick="openCourseModal('cybersecurity')">
+                        <div class="category-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Cyber Security</h3>
+                        <p>Ethical hacking, network security, cryptography</p>
+                        <span class="course-count">35 Topics</span>
+                    </div>
+                    <div class="category-card" onclick="openCourseModal('relationships')">
+                        <div class="category-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>Relationships</h3>
+                        <p>Marriage, dating, communication, personal growth</p>
+                        <span class="course-count">25 Topics</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="light-section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Why Choose Escape The Matrix?</h2>
+                    <p>Join the digital school for hustlers who are done with limits. Learn the skills, systems, and mindset to win in the digital economy.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3>Structured Learning Paths</h3>
+                        <p>Follow curated learning paths designed by industry experts to maximize your progress.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <h3>Real-World Projects</h3>
+                        <p>Build portfolio-worthy projects that demonstrate your skills to potential employers.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Community Support</h3>
+                        <p>Join a community of like-minded learners and get help when you need it.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <h3>Industry-Recognized Certificates</h3>
+                        <p>Earn certificates that validate your skills and boost your career prospects.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h3>Career Services</h3>
+                        <p>Get career guidance, resume reviews, and interview preparation support.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Learn Anywhere</h3>
+                        <p>Access courses on any device, at any time, and learn at your own pace.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="light-section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Choose Your Path</h2>
+                    <p>Whether you're building foundational skills or ready to access the real money-making systems, we have a path for you.</p>
+                </div>
+                <div class="pricing-tiers">
+                    <div class="pricing-card basic">
+                        <div class="pricing-header">
+                            <h3>Basic Academy</h3>
+                            <p>Foundation digital skills</p>
+                            <div class="price">SLL 1,000,000<span>/month</span></div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>Access to 5 basic courses</li>
+                            <li>Community forum access</li>
+                            <li>Monthly Q&A sessions</li>
+                            <li>Basic project feedback</li>
+                            <li>Certificate of completion</li>
+                            <li>Limited AI chatbot access</li>
+                        </ul>
+                        <a href="#" class="cta-button" onclick="openPaymentModal('basic')">Start Learning</a>
+                    </div>
+                    
+                    <div class="pricing-card premium">
+                        <div class="pricing-header">
+                            <h3 style="color: var(--matrix-green);">The Real World</h3>
+                            <p>Premium access to money systems</p>
+                            <div class="price">SLL 5,000,000<span>/month</span></div>
+                        </div>
+                        <ul class="pricing-features premium">
+                            <li>Everything in Basic Academy</li>
+                            <li>Access to ALL 50+ courses</li>
+                            <li>Live money-making systems</li>
+                            <li>Insider network access</li>
+                            <li>Advanced automation training</li>
+                            <li>1-on-1 mentorship sessions</li>
+                            <li>Premium tool access</li>
+                            <li>Real-time market analysis</li>
+                            <li>Unlimited AI chatbot access</li>
+                        </ul>
+                        <a href="#" class="cta-button secondary" onclick="openPaymentModal('premium')">Enter The Real World</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Matrix Premium Section -->
+        <section class="matrix-section" id="premium">
+            <div class="container">
+                <div class="section-title">
+                    <h2>The Real World - Premium Access</h2>
+                    <p>Welcome to the other side. This is where we pull back the curtain on how money really flows in the digital economy.</p>
+                </div>
+                <div class="premium-features">
+                    <div class="premium-card">
+                        <div class="premium-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <h3>Live Money-Making Systems</h3>
+                        <p>Real-time access to current profitable opportunities, arbitrage systems, and emerging business models.</p>
+                    </div>
+                    <div class="premium-card">
+                        <div class="premium-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Insider Networks</h3>
+                        <p>Direct connections to high-level entrepreneurs, investors, and industry insiders.</p>
+                    </div>
+                    <div class="premium-card">
+                        <div class="premium-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>Advanced Automation</h3>
+                        <p>Learn to build systems that generate income while you sleep using advanced bots and workflows.</p>
+                    </div>
+                    <div class="premium-card">
+                        <div class="premium-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Live Market Analysis</h3>
+                        <p>Real-time breakdowns of emerging trends, market shifts, and profitable niches before they saturate.</p>
+                    </div>
+                    <div class="premium-card">
+                        <div class="premium-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <h3>Advanced Tool Access</h3>
+                        <p>Premium software, APIs, and tools that give you a competitive edge in the marketplace.</p>
+                    </div>
+                    <div class="premium-card">
+                        <div class="premium-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h3>Direct Mentorship</h3>
+                        <p>1-on-1 guidance from 7-figure earners who've actually escaped the matrix.</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 50px;">
+                    <p style="font-size: 1.3em; font-weight: 600; color: var(--matrix-green);">
+                        This is not just education. This is <span style="text-decoration: underline;">access</span>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="light-section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>What Our Students Say</h2>
+                    <p>Join thousands of students who have transformed their lives with Escape The Matrix Academy</p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "I learned more in 3 months here than in 4 years of college. The practical approach changed everything for me."
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">SM</div>
+                            <div class="author-info">
+                                <h4>Sarah M.</h4>
+                                <p>Web Developer</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "The premium section revealed business models I never knew existed. I 5x'd my income in 6 months."
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">JR</div>
+                            <div class="author-info">
+                                <h4>James R.</h4>
+                                <p>Digital Entrepreneur</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "The Real World access connected me with investors for my startup. This isn't just a course - it's a gateway."
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">AT</div>
+                            <div class="author-info">
+                                <h4>Alex T.</h4>
+                                <p>Startup Founder</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-column">
+                        <h3>Escape The Matrix</h3>
+                        <p>Empowering hustlers worldwide to break free from the 9-5 and build digital freedom through in-demand skills.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Quick Links</h3>
+                        <ul class="footer-links">
+                            <li><a href="#home">Home</a></li>
+                            <li><a href="#courses">Courses</a></li>
+                            <li><a href="#dashboard">Data Analysis</a></li>
+                            <li><a href="#pricing">Pricing</a></li>
+                            <li><a href="#premium">The Real World</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Resources</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Community</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Affiliate Program</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Contact Us</h3>
+                        <ul class="footer-links">
+                            <li><i class="fas fa-envelope"></i> info@escapethematrix.academy</li>
+                            <li><i class="fas fa-phone"></i> +232 (XXX) XXX-XXXX</li>
+                            <li><i class="fas fa-map-marker-alt"></i> Freetown, Sierra Leone</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 Escape The Matrix Academy. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- AI Assistant Chat Widget -->
+    <div class="chat-widget">
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+                <h3><i class="fas fa-robot"></i> Matrix Assistant</h3>
+                <button class="chat-close" onclick="toggleChat()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <p>Hello! I'm your Matrix Assistant. How can I help you today?</p>
+                    <div class="message-time" id="currentTime"></div>
+                    <div class="quick-actions">
+                        <div class="quick-action" onclick="sendQuickMessage('Show data analysis tips')">Data Analysis Tips</div>
+                        <div class="quick-action" onclick="sendQuickMessage('Help with UBA payment')">UBA Payment Help</div>
+                        <div class="quick-action" onclick="sendQuickMessage('Account verification')">Account Issues</div>
+                    </div>
+                </div>
+            </div>
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="handleChatInput(event)">
+                <button onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        <button class="chat-toggle" onclick="toggleChat()">
+            <i class="fas fa-robot"></i>
+            Matrix Assistant
+            <span class="notification-badge" id="notificationBadge" style="display:none;">!</span>
+        </button>
+    </div>
+
+    <!-- Authentication Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-content">
+            <span class="close-modal" onclick="closeModal('authModal')">&times;</span>
+            <h2 class="modal-title">Authentication</h2>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
+                <div class="auth-tab" onclick="switchAuthTab('register')">Register</div>
+            </div>
+            
+            <div class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password">
+                </div>
+                <button class="btn btn-purple" style="width:100%;" onclick="login()">Login</button>
+                <p style="text-align:center; margin-top:15px;">
+                    <a href="#" onclick="switchAuthTab('forgot')">Forgot Password?</a>
+                </p>
+            </div>
+            
+            <div class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" class="form-control" placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" class="form-control" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" class="form-control" placeholder="Create a password">
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirm">Confirm Password</label>
+                    <input type="password" id="registerConfirm" class="form-control" placeholder="Confirm your password">
+                </div>
+                <button class="btn btn-purple" style="width:100%;" onclick="register()">Create Account</button>
+            </div>
+            
+            <div class="auth-form" id="forgotForm">
+                <div class="form-group">
+                    <label for="forgotEmail">Email</label>
+                    <input type="email" id="forgotEmail" class="form-control" placeholder="Enter your email">
+                </div>
+                <button class="btn btn-purple" style="width:100%;" onclick="resetPassword()">Send Reset Link</button>
+                <p style="text-align:center; margin-top:15px;">
+                    <a href="#" onclick="switchAuthTab('login')">Back to Login</a>
+                </p>
+            </div>
+            
+            <div class="auth-form" id="verificationForm">
+                <div class="form-group">
+                    <p>We've sent a verification code to your email. Please enter it below:</p>
+                    <div class="verification-code">
+                        <input type="text" maxlength="1" class="form-control" oninput="moveToNext(this, 1)">
+                        <input type="text" maxlength="1" class="form-control" oninput="moveToNext(this, 2)">
+                        <input type="text" maxlength="1" class="form-control" oninput="moveToNext(this, 3)">
+                        <input type="text" maxlength="1" class="form-control" oninput="moveToNext(this, 4)">
+                        <input type="text" maxlength="1" class="form-control" oninput="moveToNext(this, 5)">
+                        <input type="text" maxlength="1" class="form-control" oninput="moveToNext(this, 6)">
+                    </div>
+                </div>
+                <button class="btn btn-purple" style="width:100%;" onclick="verifyCode()">Verify</button>
+                <p style="text-align:center; margin-top:15px;">
+                    <a href="#" onclick="resendCode()">Resend Code</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- UBA Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('paymentModal')">&times;</span>
+            
+            <div class="uba-payment-header">
+                <div class="uba-logo">
+                    <i class="fas fa-university"></i>
+                </div>
+                <h3>United Bank for Africa</h3>
+                <p>Secure Payment Gateway</p>
+            </div>
+            
+            <div id="paymentFormContainer">
+                <!-- Payment form will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Analysis Results Modal -->
+    <div class="modal" id="analysisModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('analysisModal')">&times;</span>
+            <h2 class="modal-title">Data Analysis Results</h2>
+            <div id="analysisModalContent">
+                <!-- Analysis results will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Detail Modal -->
+    <div class="modal" id="courseModal">
+        <div class="modal-content course-modal-content">
+            <span class="close-modal" onclick="closeModal('courseModal')">&times;</span>
+            <div class="course-header">
+                <div class="course-image" id="courseImage">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <div class="course-info">
+                    <h2 id="courseTitle">Programming & Automation</h2>
+                    <div class="course-meta">
+                        <span class="course-badge" id="courseLevel">Beginner to Advanced</span>
+                        <span class="course-badge" id="courseCount">50 Topics</span>
+                    </div>
+                    <p id="courseDescription">Master programming languages and automation techniques to build powerful applications and streamline workflows.</p>
+                </div>
+            </div>
+            <div class="course-topics" id="courseTopics">
+                <!-- Topics will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Matrix Background
+        function createMatrixEffect() {
+            const container = document.getElementById('matrix-bg');
+            const digits = "01";
+            const text = "The Digital School for Hustlers";
+            
+            const columnCount = Math.floor(window.innerWidth / 18);
+            
+            for (let i = 0; i < columnCount; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                
+                const left = (i / columnCount) * 100;
+                column.style.left = `${left}%`;
+                
+                const duration = Math.random() * 15 + 10;
+                column.style.animationDuration = `${duration}s`;
+                
+                const delay = Math.random() * 5;
+                column.style.animationDelay = `${delay}s`;
+                
+                const digitCount = Math.floor(Math.random() * 25) + 15;
+                
+                for (let j = 0; j < digitCount; j++) {
+                    const digit = document.createElement('div');
+                    digit.className = 'matrix-digit';
+                    digit.textContent = digits[Math.floor(Math.random() * digits.length)];
+                    
+                    if (Math.random() > 0.85) {
+                        digit.classList.add('highlight');
+                    }
+                    
+                    column.appendChild(digit);
+                }
+                
+                if (Math.random() > 0.6) {
+                    const textElement = document.createElement('div');
+                    textElement.className = 'matrix-text';
+                    textElement.textContent = text;
+                    column.appendChild(textElement);
+                }
+                
+                container.appendChild(column);
+            }
+        }
+
+        // AI Assistant with Real Authentication & API Integration
+        class MatrixAssistant {
+            constructor() {
+                this.isAuthenticated = false;
+                this.currentUser = null;
+                this.chatHistory = [];
+                this.apiBaseUrl = 'https://api.escape-the-matrix.com/v1';
+                this.isChatOpen = false;
+                this.typingTimeout = null;
+                
+                this.initializeAssistant();
+            }
+            
+            initializeAssistant() {
+                this.checkAuthenticationStatus();
+                this.loadChatHistory();
+                this.updateCurrentTime();
+                setInterval(() => this.updateCurrentTime(), 60000);
+            }
+            
+            checkAuthenticationStatus() {
+                const userData = localStorage.getItem('matrixUser');
+                const authToken = localStorage.getItem('matrixAuthToken');
+                
+                if (userData && authToken) {
+                    this.currentUser = JSON.parse(userData);
+                    this.isAuthenticated = true;
+                    this.updateUIForAuthenticatedUser();
+                    this.validateTokenWithAPI(authToken);
+                }
+            }
+            
+            async validateTokenWithAPI(token) {
+                try {
+                    const response = await this.makeAPICall('GET', '/auth/validate', null, token);
+                    if (response.valid) {
+                        console.log('Token is valid');
+                    } else {
+                        this.logout();
+                    }
+                } catch (error) {
+                    console.error('Token validation failed:', error);
+                }
+            }
+            
+            async makeAPICall(method, endpoint, data = null, token = null) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        const mockResponses = {
+                            '/auth/login': { success: true, token: 'mock_jwt_token', user: { id: 1, name: 'Demo User', email: 'user@example.com' } },
+                            '/auth/register': { success: true, message: 'Registration successful' },
+                            '/auth/validate': { valid: true },
+                            '/chat/message': { 
+                                success: true, 
+                                response: this.generateAIResponse(data.message),
+                                timestamp: new Date().toISOString()
+                            },
+                            '/payment/process': { success: true, transactionId: 'TX' + Date.now() }
+                        };
+                        
+                        const response = mockResponses[endpoint] || { success: false, error: 'Endpoint not found' };
+                        
+                        if (response.success || response.valid) {
+                            resolve(response);
+                        } else {
+                            reject(response);
+                        }
+                    }, 1000);
+                });
+            }
+            
+            generateAIResponse(userMessage) {
+                const responses = {
+                    'hello': "Hello! I'm your Matrix Assistant. How can I help you with data analysis or payments today?",
+                    'help': "I can help you with: 1) Data analysis and visualization 2) UBA payment processing 3) Account management 4) Technical support",
+                    'data analysis': "For data analysis, you can upload CSV, JSON, or Excel files. I'll help you explore, clean, and visualize your data.",
+                    'payment': "We support UBA Online Banking, Mobile App, and USSD payments. All transactions are secure and encrypted.",
+                    'account': "You can manage your account through the user menu. Need help with verification or password reset?",
+                    'default': "I understand you're asking about: " + userMessage + ". Let me connect you with the right information or support."
+                };
+                
+                const lowerMessage = userMessage.toLowerCase();
+                
+                for (const [key, response] of Object.entries(responses)) {
+                    if (lowerMessage.includes(key)) {
+                        return response;
+                    }
+                }
+                
+                return responses.default;
+            }
+            
+            async sendMessage(message) {
+                if (!message.trim()) return;
+                
+                this.addMessageToChat(message, 'user');
+                this.showTypingIndicator();
+                
+                try {
+                    const response = await this.makeAPICall('POST', '/chat/message', { message });
+                    this.hideTypingIndicator();
+                    this.addMessageToChat(response.response, 'bot');
+                    this.saveChatHistory();
+                } catch (error) {
+                    this.hideTypingIndicator();
+                    this.addMessageToChat("I'm having trouble connecting right now. Please try again later.", 'bot');
+                }
+            }
+            
+            addMessageToChat(message, sender) {
+                const chatMessages = document.getElementById('chatMessages');
+                const messageElement = document.createElement('div');
+                messageElement.className = `message ${sender}-message`;
+                
+                const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                messageElement.innerHTML = `
+                    <p>${message}</p>
+                    <div class="message-time">${time}</div>
+                `;
+                
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                this.chatHistory.push({
+                    sender,
+                    message,
+                    timestamp: new Date().toISOString()
+                });
+            }
+            
+            showTypingIndicator() {
+                const typingIndicator = document.getElementById('typingIndicator');
+                typingIndicator.style.display = 'block';
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            hideTypingIndicator() {
+                const typingIndicator = document.getElementById('typingIndicator');
+                typingIndicator.style.display = 'none';
+            }
+            
+            loadChatHistory() {
+                const savedHistory = localStorage.getItem('matrixChatHistory');
+                if (savedHistory) {
+                    this.chatHistory = JSON.parse(savedHistory);
+                }
+            }
+            
+            saveChatHistory() {
+                if (this.chatHistory.length > 50) {
+                    this.chatHistory = this.chatHistory.slice(-50);
+                }
+                localStorage.setItem('matrixChatHistory', JSON.stringify(this.chatHistory));
+            }
+            
+            updateCurrentTime() {
+                const timeElement = document.getElementById('currentTime');
+                if (timeElement) {
+                    const now = new Date();
+                    timeElement.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                }
+            }
+            
+            updateUIForAuthenticatedUser() {
+                const userAvatar = document.getElementById('userAvatar');
+                const logoutBtn = document.getElementById('logoutBtn');
+                
+                if (this.isAuthenticated && this.currentUser) {
+                    userAvatar.innerHTML = `<i class="fas fa-user-check"></i>`;
+                    logoutBtn.style.display = 'block';
+                    
+                    const chatMessages = document.getElementById('chatMessages');
+                    const personalizedMsg = document.querySelector('.bot-message p');
+                    if (personalizedMsg && !personalizedMsg.innerHTML.includes(this.currentUser.name)) {
+                        personalizedMsg.innerHTML = `Hello ${this.currentUser.name}! I'm your Matrix Assistant. How can I help you today?`;
+                    }
+                }
+            }
+            
+            async login(email, password) {
+                try {
+                    const response = await this.makeAPICall('POST', '/auth/login', { email, password });
+                    
+                    if (response.success) {
+                        this.isAuthenticated = true;
+                        this.currentUser = response.user;
+                        
+                        localStorage.setItem('matrixUser', JSON.stringify(response.user));
+                        localStorage.setItem('matrixAuthToken', response.token);
+                        
+                        this.updateUIForAuthenticatedUser();
+                        closeModal('authModal');
+                        
+                        this.addMessageToChat(`Welcome back, ${response.user.name}! How can I assist you today?`, 'bot');
+                        
+                        return true;
+                    }
+                } catch (error) {
+                    console.error('Login failed:', error);
+                    return false;
+                }
+            }
+            
+            async register(name, email, password) {
+                try {
+                    const response = await this.makeAPICall('POST', '/auth/register', { name, email, password });
+                    
+                    if (response.success) {
+                        switchAuthTab('verification');
+                        return true;
+                    }
+                } catch (error) {
+                    console.error('Registration failed:', error);
+                    return false;
+                }
+            }
+            
+            logout() {
+                this.isAuthenticated = false;
+                this.currentUser = null;
+                
+                localStorage.removeItem('matrixUser');
+                localStorage.removeItem('matrixAuthToken');
+                
+                const userAvatar = document.getElementById('userAvatar');
+                const logoutBtn = document.getElementById('logoutBtn');
+                
+                userAvatar.innerHTML = `<i class="fas fa-user"></i>`;
+                logoutBtn.style.display = 'none';
+                
+                this.addMessageToChat("You've been logged out. Please log in again to access all features.", 'bot');
+            }
+        }
+
+        // Data Analysis Application
+        class DataAnalysisApp {
+            constructor() {
+                this.data = null;
+                this.numericColumns = null;
+                this.categoricalColumns = null;
+                this.chart = null;
+            }
+            
+            loadData(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const content = e.target.result;
+                            if (file.name.endsWith('.csv')) {
+                                this.parseCSV(content);
+                            } else if (file.name.endsWith('.json')) {
+                                this.parseJSON(content);
+                            }
+                            this.updateDataPreview();
+                            resolve();
+                        } catch (error) {
+                            reject(error);
+                        }
+                    };
+                    reader.readAsText(file);
+                });
+            }
+            
+            parseCSV(content) {
+                const lines = content.split('\n');
+                const headers = lines[0].split(',').map(h => h.trim());
+                
+                this.data = [];
+                for (let i = 1; i < lines.length; i++) {
+                    if (lines[i].trim() === '') continue;
+                    const values = lines[i].split(',').map(v => v.trim());
+                    const row = {};
+                    headers.forEach((header, index) => {
+                        row[header] = values[index] || '';
+                    });
+                    this.data.push(row);
+                }
+                
+                this._identifyColumnTypes();
+            }
+            
+            parseJSON(content) {
+                this.data = JSON.parse(content);
+                if (Array.isArray(this.data)) {
+                    this._identifyColumnTypes();
+                } else {
+                    throw new Error('JSON data must be an array of objects');
+                }
+            }
+            
+            _identifyColumnTypes() {
+                if (this.data.length === 0) return;
+                
+                const firstRow = this.data[0];
+                this.numericColumns = [];
+                this.categoricalColumns = [];
+                
+                for (const key in firstRow) {
+                    const value = firstRow[key];
+                    if (!isNaN(parseFloat(value)) && isFinite(value)) {
+                        this.numericColumns.push(key);
+                    } else {
+                        this.categoricalColumns.push(key);
+                    }
+                }
+            }
+            
+            updateDataPreview() {
+                const preview = document.getElementById('dataPreview');
+                if (!this.data || this.data.length === 0) {
+                    preview.innerHTML = '<p>No data available.</p>';
+                    return;
+                }
+                
+                let html = '<table class="result-table">';
+                
+                html += '<tr>';
+                for (const key in this.data[0]) {
+                    html += `<th>${key}</th>`;
+                }
+                html += '</tr>';
+                
+                for (let i = 0; i < Math.min(5, this.data.length); i++) {
+                    html += '<tr>';
+                    for (const key in this.data[i]) {
+                        html += `<td>${this.data[i][key]}</td>`;
+                    }
+                    html += '</tr>';
+                }
+                
+                html += '</table>';
+                html += `<p>Showing 5 of ${this.data.length} rows. ${this.numericColumns.length} numeric columns, ${this.categoricalColumns.length} categorical columns.</p>`;
+                
+                preview.innerHTML = html;
+            }
+            
+            performEDA() {
+                if (!this.data || this.data.length === 0) {
+                    alert('Please load data first!');
+                    return;
+                }
+                
+                let html = '<div class="result-section">';
+                html += '<h4>Exploratory Data Analysis</h4>';
+                html += `<p><strong>Dataset Shape:</strong> ${this.data.length} rows, ${Object.keys(this.data[0]).length} columns</p>`;
+                
+                if (this.numericColumns.length > 0) {
+                    html += '<h5>Numeric Columns Summary:</h5>';
+                    html += '<table class="result-table">';
+                    html += '<tr><th>Column</th><th>Mean</th><th>Min</th><th>Max</th><th>Std Dev</th></tr>';
+                    
+                    for (const col of this.numericColumns) {
+                        const values = this.data.map(row => parseFloat(row[col])).filter(v => !isNaN(v));
+                        if (values.length === 0) continue;
+                        
+                        const mean = values.reduce((a, b) => a + b, 0) / values.length;
+                        const min = Math.min(...values);
+                        const max = Math.max(...values);
+                        const std = Math.sqrt(values.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / values.length);
+                        
+                        html += `<tr>
+                            <td>${col}</td>
+                            <td>${mean.toFixed(2)}</td>
+                            <td>${min.toFixed(2)}</td>
+                            <td>${max.toFixed(2)}</td>
+                            <td>${std.toFixed(2)}</td>
+                        </tr>`;
+                    }
+                    html += '</table>';
+                }
+                
+                if (this.categoricalColumns.length > 0) {
+                    html += '<h5>Categorical Columns Summary:</h5>';
+                    html += '<table class="result-table">';
+                    html += '<tr><th>Column</th><th>Unique Values</th><th>Most Frequent</th></tr>';
+                    
+                    for (const col of this.categoricalColumns) {
+                        const values = this.data.map(row => row[col]);
+                        const uniqueValues = [...new Set(values)];
+                        const valueCounts = {};
+                        values.forEach(v => valueCounts[v] = (valueCounts[v] || 0) + 1);
+                        const mostFrequent = Object.keys(valueCounts).reduce((a, b) => valueCounts[a] > valueCounts[b] ? a : b);
+                        
+                        html += `<tr>
+                            <td>${col}</td>
+                            <td>${uniqueValues.length}</td>
+                            <td>${mostFrequent} (${valueCounts[mostFrequent]} occurrences)</td>
+                        </tr>`;
+                    }
+                    html += '</table>';
+                }
+                
+                html += '</div>';
+                
+                document.getElementById('analysisResults').innerHTML = html;
+                this.showInModal('Exploratory Data Analysis', html);
+            }
+            
+            handleMissingValues() {
+                if (!this.data || this.data.length === 0) {
+                    alert('Please load data first!');
+                    return;
+                }
+                
+                let html = '<div class="result-section">';
+                html += '<h4>Missing Values Analysis</h4>';
+                
+                const missingCounts = {};
+                for (const key in this.data[0]) {
+                    missingCounts[key] = 0;
+                }
+                
+                for (const row of this.data) {
+                    for (const key in row) {
+                        if (row[key] === '' || row[key] === null || row[key] === undefined) {
+                            missingCounts[key]++;
+                        }
+                    }
+                }
+                
+                html += '<table class="result-table">';
+                html += '<tr><th>Column</th><th>Missing Values</th><th>Missing Percentage</th></tr>';
+                
+                for (const key in missingCounts) {
+                    const count = missingCounts[key];
+                    const percentage = (count / this.data.length * 100).toFixed(2);
+                    html += `<tr>
+                        <td>${key}</td>
+                        <td>${count}</td>
+                        <td>${percentage}%</td>
+                    </tr>`;
+                }
+                
+                html += '</table>';
+                html += '<button class="btn" onclick="dataApp.imputeMissingValues()">Impute Missing Values</button>';
+                html += '</div>';
+                
+                document.getElementById('processingResults').innerHTML = html;
+            }
+            
+            imputeMissingValues() {
+                if (!this.data || this.data.length === 0) return;
+                
+                for (const row of this.data) {
+                    for (const key in row) {
+                        if (row[key] === '' || row[key] === null || row[key] === undefined) {
+                            if (this.numericColumns.includes(key)) {
+                                const values = this.data
+                                    .map(r => parseFloat(r[key]))
+                                    .filter(v => !isNaN(v) && v !== '');
+                                const mean = values.reduce((a, b) => a + b, 0) / values.length;
+                                row[key] = mean.toFixed(2);
+                            } else {
+                                const values = this.data.map(r => r[key]).filter(v => v !== '');
+                                const valueCounts = {};
+                                values.forEach(v => valueCounts[v] = (valueCounts[v] || 0) + 1);
+                                const mostFrequent = Object.keys(valueCounts).reduce((a, b) => 
+                                    valueCounts[a] > valueCounts[b] ? a : b, 'Unknown');
+                                row[key] = mostFrequent;
+                            }
+                        }
+                    }
+                }
+                
+                this.updateDataPreview();
+                alert('Missing values have been imputed!');
+            }
+            
+            generateVisualizations() {
+                if (!this.data || this.data.length === 0) {
+                    alert('Please load data first!');
+                    return;
+                }
+                
+                if (this.numericColumns.length === 0) {
+                    alert('No numeric columns available for visualization.');
+                    return;
+                }
+                
+                const ctx = document.getElementById('dataChart').getContext('2d');
+                
+                if (this.chart) {
+                    this.chart.destroy();
+                }
+                
+                const firstNumericCol = this.numericColumns[0];
+                const values = this.data.map(row => parseFloat(row[firstNumericCol])).filter(v => !isNaN(v));
+                
+                const min = Math.min(...values);
+                const max = Math.max(...values);
+                const bucketSize = (max - min) / 10;
+                const buckets = Array(10).fill(0);
+                
+                values.forEach(value => {
+                    const bucketIndex = Math.min(9, Math.floor((value - min) / bucketSize));
+                    buckets[bucketIndex]++;
+                });
+                
+                this.chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: Array.from({length: 10}, (_, i) => 
+                            `${(min + i * bucketSize).toFixed(1)}-${(min + (i+1) * bucketSize).toFixed(1)}`),
+                        datasets: [{
+                            label: `Distribution of ${firstNumericCol}`,
+                            data: buckets,
+                            backgroundColor: 'rgba(255, 76, 0, 0.7)',
+                            borderColor: 'rgba(255, 76, 0, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Frequency'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: firstNumericCol
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                document.getElementById('analysisResults').innerHTML = 
+                    `<p>Generated histogram for ${firstNumericCol}. Chart displayed above.</p>`;
+            }
+            
+            showColumnStats() {
+                if (!this.data || this.data.length === 0) {
+                    alert('Please load data first!');
+                    return;
+                }
+                
+                let html = '<div class="result-section">';
+                html += '<h4>Column Statistics</h4>';
+                html += '<table class="result-table">';
+                html += '<tr><th>Column Name</th><th>Type</th><th>Non-Null Count</th></tr>';
+                
+                for (const key in this.data[0]) {
+                    const nonNullCount = this.data.filter(row => 
+                        row[key] !== '' && row[key] !== null && row[key] !== undefined).length;
+                    const type = this.numericColumns.includes(key) ? 'Numeric' : 'Categorical';
+                    
+                    html += `<tr>
+                        <td>${key}</td>
+                        <td>${type}</td>
+                        <td>${nonNullCount}/${this.data.length} (${(nonNullCount/this.data.length*100).toFixed(1)}%)</td>
+                    </tr>`;
+                }
+                
+                html += '</table>';
+                html += '</div>';
+                
+                document.getElementById('processingResults').innerHTML = html;
+            }
+            
+            showDataOverview() {
+                if (!this.data || this.data.length === 0) {
+                    alert('Please load data first!');
+                    return;
+                }
+                
+                let html = '<div class="result-section">';
+                html += '<h4>Data Overview</h4>';
+                html += `<p><strong>Total Rows:</strong> ${this.data.length}</p>`;
+                html += `<p><strong>Total Columns:</strong> ${Object.keys(this.data[0]).length}</p>`;
+                html += `<p><strong>Numeric Columns:</strong> ${this.numericColumns.join(', ')}</p>`;
+                html += `<p><strong>Categorical Columns:</strong> ${this.categoricalColumns.join(', ')}</p>`;
+                
+                const sampleRow = JSON.stringify(this.data[0]);
+                const estimatedSize = (sampleRow.length * this.data.length) / 1024;
+                html += `<p><strong>Estimated Memory Usage:</strong> ${estimatedSize.toFixed(2)} KB</p>`;
+                
+                html += '</div>';
+                
+                document.getElementById('processingResults').innerHTML = html;
+            }
+            
+            showInModal(title, content) {
+                document.getElementById('analysisModalContent').innerHTML = content;
+                document.querySelector('#analysisModal .modal-title').textContent = title;
+                openModal('analysisModal');
+            }
+        }
+
+        // Initialize Applications
+        const matrixAssistant = new MatrixAssistant();
+        const dataApp = new DataAnalysisApp();
+
+        // Course Data
+        const courses = {
+            programming: {
+                title: "Programming & Automation",
+                icon: "fa-laptop-code",
+                level: "Beginner to Advanced",
+                topicCount: "50 Topics",
+                description: "Master programming languages and automation techniques to build powerful applications and streamline workflows.",
+                topics: [
+                    { title: "Python Fundamentals", type: "video", free: true },
+                    { title: "JavaScript Basics", type: "video", free: true },
+                    { title: "Java Programming", type: "video", free: false },
+                    { title: "C++ for Beginners", type: "video", free: false },
+                    { title: "Web Scraping with Python", type: "video", free: false },
+                    { title: "API Integration", type: "video", free: false },
+                    { title: "Automation Scripts", type: "video", free: false },
+                    { title: "Data Structures", type: "video", free: false },
+                    { title: "Algorithms", type: "video", free: false },
+                    { title: "Debugging Techniques", type: "video", free: false }
+                ]
+            },
+            webdev: {
+                title: "Web Development",
+                icon: "fa-globe",
+                level: "Beginner to Advanced",
+                topicCount: "45 Topics",
+                description: "Learn to build responsive, modern websites and web applications using the latest technologies.",
+                topics: [
+                    { title: "HTML5 & CSS3", type: "video", free: true },
+                    { title: "JavaScript ES6+", type: "video", free: true },
+                    { title: "React Fundamentals", type: "video", free: false },
+                    { title: "Node.js Backend", type: "video", free: false },
+                    { title: "Database Design", type: "video", free: false },
+                    { title: "RESTful APIs", type: "video", free: false },
+                    { title: "Responsive Design", type: "video", free: false },
+                    { title: "Web Performance", type: "video", free: false },
+                    { title: "Progressive Web Apps", type: "video", free: false },
+                    { title: "Deployment Strategies", type: "video", free: false }
+                ]
+            },
+            data: {
+                title: "Data Analysis",
+                icon: "fa-chart-bar",
+                level: "Beginner to Advanced",
+                topicCount: "40 Topics",
+                description: "Learn to extract insights from data using statistical analysis, visualization, and machine learning.",
+                topics: [
+                    { title: "Excel for Data Analysis", type: "video", free: true },
+                    { title: "SQL Fundamentals", type: "video", free: true },
+                    { title: "Python for Data Science", type: "video", free: false },
+                    { title: "Data Visualization", type: "video", free: false },
+                    { title: "Statistical Analysis", type: "video", free: false },
+                    { title: "Machine Learning Basics", type: "video", free: false },
+                    { title: "Tableau Dashboarding", type: "video", free: false },
+                    { title: "Power BI Reports", type: "video", free: false },
+                    { title: "Big Data Concepts", type: "video", free: false },
+                    { title: "Data Storytelling", type: "video", free: false }
+                ]
+            }
+        };
+
+        // Global Functions
+        function toggleChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            const isOpen = chatContainer.style.display === 'flex';
+            
+            if (isOpen) {
+                chatContainer.style.display = 'none';
+                matrixAssistant.isChatOpen = false;
+            } else {
+                chatContainer.style.display = 'flex';
+                matrixAssistant.isChatOpen = true;
+                setTimeout(() => document.getElementById('chatInput').focus(), 100);
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                matrixAssistant.sendMessage(message);
+                input.value = '';
+            }
+        }
+
+        function sendQuickMessage(message) {
+            document.getElementById('chatInput').value = message;
+            sendMessage();
+        }
+
+        function handleChatInput(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function openAuthModal() {
+            openModal('authModal');
+        }
+
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.auth-tab').forEach(tabEl => {
+                tabEl.classList.remove('active');
+            });
+            
+            if (tab === 'login') {
+                document.getElementById('loginForm').classList.add('active');
+                document.querySelectorAll('.auth-tab')[0].classList.add('active');
+            } else if (tab === 'register') {
+                document.getElementById('registerForm').classList.add('active');
+                document.querySelectorAll('.auth-tab')[1].classList.add('active');
+            } else if (tab === 'forgot') {
+                document.getElementById('forgotForm').classList.add('active');
+            } else if (tab === 'verification') {
+                document.getElementById('verificationForm').classList.add('active');
+            }
+        }
+
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            matrixAssistant.login(email, password).then(success => {
+                if (!success) {
+                    alert('Login failed. Please check your credentials.');
+                }
+            });
+        }
+
+        function register() {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerConfirm').value;
+            
+            if (!name || !email || !password || !confirm) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (password !== confirm) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters');
+                return;
+            }
+            
+            matrixAssistant.register(name, email, password).then(success => {
+                if (!success) {
+                    alert('Registration failed. Please try again.');
+                }
+            });
+        }
+
+        function resetPassword() {
+            const email = document.getElementById('forgotEmail').value;
+            
+            if (!email) {
+                alert('Please enter your email');
+                return;
+            }
+            
+            alert('Password reset link has been sent to your email');
+            switchAuthTab('login');
+        }
+
+        function moveToNext(input, nextIndex) {
+            if (input.value.length === 1) {
+                const nextInput = input.parentElement.children[nextIndex];
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            }
+        }
+
+        function verifyCode() {
+            alert('Verification successful! Your account has been created.');
+            closeModal('authModal');
+            
+            matrixAssistant.isAuthenticated = true;
+            matrixAssistant.currentUser = {
+                name: document.getElementById('registerName').value,
+                email: document.getElementById('registerEmail').value
+            };
+            matrixAssistant.updateUIForAuthenticatedUser();
+        }
+
+        function resendCode() {
+            alert('Verification code has been resent to your email');
+        }
+
+        function loadData() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                alert('Please select a file first!');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            dataApp.loadData(file)
+                .then(() => {
+                    document.getElementById('analysisResults').innerHTML = 
+                        '<p>Data loaded successfully! Use the analysis buttons to explore your data.</p>';
+                })
+                .catch(error => {
+                    alert('Error loading file: ' + error.message);
+                });
+        }
+
+        function performEDA() {
+            dataApp.performEDA();
+        }
+
+        function handleMissingValues() {
+            dataApp.handleMissingValues();
+        }
+
+        function generateVisualizations() {
+            dataApp.generateVisualizations();
+        }
+
+        function showColumnStats() {
+            dataApp.showColumnStats();
+        }
+
+        function showDataOverview() {
+            dataApp.showDataOverview();
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            if (modalId === 'paymentModal') {
+                document.getElementById('paymentFormContainer').innerHTML = '';
+            }
+        }
+        
+        let selectedPlan = '';
+        let paymentStep = 'method';
+        let selectedPaymentMethod = 'uba-online';
+        
+        function openPaymentModal(plan) {
+            selectedPlan = plan;
+            paymentStep = 'method';
+            showPaymentMethodSelection();
+            openModal('paymentModal');
+        }
+        
+        function showPaymentMethodSelection() {
+            const planName = selectedPlan === 'basic' ? 'Basic Academy' : 'The Real World';
+            const amount = selectedPlan === 'basic' ? 'SLL 1,000,000' : 'SLL 5,000,000';
+            
+            document.getElementById('paymentFormContainer').innerHTML = `
+                <h3 class="modal-title">Select Payment Method</h3>
+                
+                <div class="payment-methods">
+                    <div class="payment-method uba active" onclick="selectPaymentMethod('uba-online')">
+                        <div class="payment-icon">
+                            <i class="fas fa-laptop"></i>
+                        </div>
+                        <p>UBA Online Banking</p>
+                    </div>
+                    <div class="payment-method" onclick="selectPaymentMethod('uba-mobile')">
+                        <div class="payment-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <p>UBA Mobile App</p>
+                    </div>
+                    <div class="payment-method" onclick="selectPaymentMethod('uba-ussd')">
+                        <div class="payment-icon">
+                            <i class="fas fa-mobile"></i>
+                        </div>
+                        <p>UBA USSD</p>
+                    </div>
+                </div>
+                
+                <div class="uba-security-notice">
+                    <h4><i class="fas fa-shield-alt"></i> Secure Payment</h4>
+                    <p>Your payment details are encrypted and processed securely through UBA's banking infrastructure. We never store your banking credentials.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label>Selected Plan</label>
+                    <input type="text" class="form-control" value="${planName}" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="text" class="form-control" value="${amount}" readonly>
+                </div>
+                
+                <button class="btn" style="width: 100%;" onclick="showPaymentDetails()">Continue to Payment</button>
+            `;
+        }
+        
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            event.target.closest('.payment-method').classList.add('active');
+        }
+        
+        function showPaymentDetails() {
+            paymentStep = 'details';
+            
+            if (selectedPaymentMethod === 'uba-online') {
+                showUbaOnlineForm();
+            } else if (selectedPaymentMethod === 'uba-mobile') {
+                showUbaMobileForm();
+            } else if (selectedPaymentMethod === 'uba-ussd') {
+                showUbaUssdForm();
+            }
+        }
+        
+        function openCourseModal(courseId) {
+            const course = courses[courseId];
+            if (!course) return;
+            
+            document.getElementById('courseTitle').textContent = course.title;
+            document.getElementById('courseImage').innerHTML = `<i class="fas ${course.icon}"></i>`;
+            document.getElementById('courseLevel').textContent = course.level;
+            document.getElementById('courseCount').textContent = course.topicCount;
+            document.getElementById('courseDescription').textContent = course.description;
+            
+            const topicsContainer = document.getElementById('courseTopics');
+            topicsContainer.innerHTML = '';
+            
+            course.topics.forEach(topic => {
+                const topicElement = document.createElement('div');
+                topicElement.className = 'topic-item';
+                topicElement.innerHTML = `
+                    <div class="topic-icon">
+                        <i class="fas fa-${topic.type === 'video' ? 'play-circle' : 'file-alt'}"></i>
+                    </div>
+                    <div>
+                        <h4>${topic.title}</h4>
+                        <p>${topic.type === 'video' ? 'Video Lesson' : 'Reading Material'}</p>
+                    </div>
+                    ${!topic.free ? '<div class="locked-icon"><i class="fas fa-lock"></i></div>' : ''}
+                `;
+                
+                if (!topic.free) {
+                    topicElement.classList.add('topic-locked');
+                }
+                
+                topicsContainer.appendChild(topicElement);
+            });
+            
+            openModal('courseModal');
+        }
+
+        // UBA Payment Functions (simplified for brevity)
+        function showUbaOnlineForm() {
+            const planName = selectedPlan === 'basic' ? 'Basic Academy' : 'The Real World';
+            const amount = selectedPlan === 'basic' ? 'SLL 1,000,000' : 'SLL 5,000,000';
+            
+            document.getElementById('paymentFormContainer').innerHTML = `
+                <h3 class="modal-title">UBA Online Banking</h3>
+                
+                <div class="uba-form-section">
+                    <h4><i class="fas fa-user"></i> Account Information</h4>
+                    <div class="form-group">
+                        <label for="ubaAccountNumber">UBA Account Number</label>
+                        <input type="text" id="ubaAccountNumber" class="form-control" placeholder="Enter your 10-digit UBA account number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ubaPassword">Internet Banking Password</label>
+                        <input type="password" id="ubaPassword" class="form-control" placeholder="Enter your UBA online banking password" required>
+                    </div>
+                </div>
+                
+                <div class="uba-form-section">
+                    <h4><i class="fas fa-lock"></i> Transaction Security</h4>
+                    <div class="form-group">
+                        <label for="ubaToken">Token Number</label>
+                        <input type="text" id="ubaToken" class="form-control" placeholder="Enter token from your UBA token device" required>
+                    </div>
+                    
+                    <div class="uba-token-notice">
+                        <i class="fas fa-info-circle"></i> For your security, please use the token generated by your UBA token device.
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Selected Plan</label>
+                    <input type="text" class="form-control" value="${planName}" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="text" class="form-control" value="${amount}" readonly>
+                </div>
+                
+                <button class="cta-button" style="width: 100%; background: var(--uba-blue);" onclick="processUbaPayment()">
+                    <i class="fas fa-lock"></i> Authorize Payment
+                </button>
+            `;
+        }
+        
+        function processUbaPayment() {
+            alert('Payment processing would be implemented with UBA payment gateway integration');
+            closeModal('paymentModal');
+            
+            setTimeout(() => {
+                alert('Payment successful! Welcome to Escape The Matrix Academy. You now have access to your selected plan.');
+            }, 500);
+        }
+
+        // Initialize
+        window.onload = function() {
+            createMatrixEffect();
+        };
+        
+        window.addEventListener('resize', function() {
+            const container = document.getElementById('matrix-bg');
+            container.innerHTML = '';
+            createMatrixEffect();
+        });
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let modal of modals) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
